@@ -49,6 +49,7 @@ impl Romaji {
 
         let parts = self.tagger.parse(input);
         let mut insert_space = false;
+        // Monotonically increasing index to the last replaced characters
         let mut last_idx = 0;
         for ref part in parts {
             // Part features:
@@ -62,10 +63,18 @@ impl Romaji {
             // 7 Reading
             // 8 Pronunciation
 
-            let idx = romanized.find(part.surface).unwrap();
             let feature = part.feature.split(',').collect::<Vec<_>>();
 
-            if let Some(katakana) = part.feature.split(',').nth(8) {
+            // Don't change punctuation; also don't update idx as other occurences will be found at
+            // places before the place of this part
+            if feature[0] == "記号" {
+                insert_space = false;
+                continue;
+            }
+
+            let idx = romanized.find(part.surface).unwrap();
+
+            if let Some(katakana) = feature.get(8) {
                 let mut replacement = to_romaji(katakana);
 
                 // Capitalize nouns
@@ -148,6 +157,10 @@ mod tests {
         assert_eq!(
             romaji.romanize("ふでペン ～ボールペン～ [GAME Mix]"),
             "fu de Pen ~Bōrupen~ [GAME Mix]",
+        );
+        assert_eq!(
+            romaji.romanize("空の境界 「殺人考察（後）」Original Soundtrack"),
+            "Sora no Kyōkai 「Satsujin Kōsatsu(Go)」Original Soundtrack",
         );
     }
 }
