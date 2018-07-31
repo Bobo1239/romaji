@@ -10,6 +10,7 @@ use std::path::Path;
 
 use igo::Tagger;
 use tempdir::TempDir;
+use wana_kana::is_katakana::is_katakana;
 use wana_kana::to_romaji::to_romaji;
 use zip::ZipArchive;
 
@@ -74,7 +75,13 @@ impl Romaji {
 
             let idx = romanized.find(part.surface).unwrap();
 
-            if let Some(katakana) = feature.get(8) {
+            let katakana = feature.get(8).or(if is_katakana(part.surface) {
+                Some(&part.surface)
+            } else {
+                None
+            });
+
+            if let Some(katakana) = katakana {
                 let mut replacement = to_romaji(katakana);
 
                 // Capitalize nouns
@@ -150,6 +157,10 @@ mod tests {
     fn romanize() {
         let romaji = Romaji::new().unwrap();
         assert_eq!(romaji.romanize("太陽のKiss"), "Taiyō no Kiss");
+        assert_eq!(
+            romaji.romanize("エブリデイワールド"),
+            "Eburideiwārudo"
+        );
         assert_eq!(
             romaji.romanize("U&I ～夕日の綺麗なあの丘で～ U&I"),
             "U&I ~Yūhi no Kirei na ano Oka de~ U&I",
