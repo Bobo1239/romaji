@@ -1,0 +1,3 @@
+[submodule "ipadic/mecab"]
+	path = ipadic/mecab
+	url = git@github.com:taku910/mecab.git

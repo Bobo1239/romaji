@@ -1,0 +1,11 @@
+[package]
+name = "romaji"
+version = "0.1.0"
+authors = ["Boris-Chengbiao Zhou <bobo1239@web.de>"]
+
+[dependencies]
+igo-rs = "0.2.4"
+wana_kana = "0.9.2"
+unicode-normalization = "0.1.7"
+tempdir = "0.3.7"
+zip = "0.4.2"
