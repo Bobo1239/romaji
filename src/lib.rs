@@ -1,5 +1,5 @@
 extern crate igo;
-extern crate tempdir;
+extern crate tempfile;
 extern crate unicode_normalization;
 extern crate wana_kana;
 extern crate zip;
@@ -9,7 +9,7 @@ use std::io::{self, Cursor};
 use std::path::Path;
 
 use igo::Tagger;
-use tempdir::TempDir;
+use tempfile::TempDir;
 use wana_kana::is_katakana::is_katakana;
 use wana_kana::to_romaji::to_romaji;
 use zip::ZipArchive;
@@ -28,7 +28,7 @@ impl Romaji {
     /// Initialize a new [`Romaji`] romanizer. This takes some time as the dictionary data has to
     /// get extracted to the file sytem and loaded by igo.
     pub fn new() -> Result<Romaji, io::Error> {
-        let tempdir = TempDir::new("romaji_ipadic")?;
+        let tempdir = TempDir::new()?;
         unzip(include_bytes!("../ipadic/ipadic.zip"), tempdir.path())?;
 
         let tagger = Tagger::new(&tempdir.path()).unwrap();
