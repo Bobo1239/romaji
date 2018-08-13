@@ -16,32 +16,34 @@ use zip::ZipArchive;
 
 use unicode_normalization::UnicodeNormalization;
 
-pub struct Romaji {
+pub struct Romanizer {
     // Drop order is top to bottom
     tagger: Tagger,
     // Keep `tempdir` in this struct as the directory is deleted once the struct is dropped
-    #[allow(dead_code)]
-    tempdir: TempDir,
+    _tempdir: TempDir,
 }
 
-impl Romaji {
-    /// Initialize a new [`Romaji`] romanizer. This takes some time as the dictionary data has to
-    /// get extracted to the file sytem and loaded by igo.
-    pub fn new() -> Result<Romaji, io::Error> {
+impl Romanizer {
+    /// Initialize a new [`Romanizer`]. This takes some time as some dictionary data has to get
+    /// extracted to the file sytem and loaded.
+    pub fn new() -> Result<Romanizer, io::Error> {
         let tempdir = TempDir::new()?;
         unzip(include_bytes!("../ipadic/ipadic.zip"), tempdir.path())?;
 
         let tagger = Tagger::new(&tempdir.path()).unwrap();
 
-        Ok(Romaji { tempdir, tagger })
+        Ok(Romanizer {
+            tagger,
+            _tempdir: tempdir,
+        })
     }
 
     /// # Examples
     ///
     /// ```
-    /// let romaji = romaji::Romaji::new().unwrap();
+    /// let romanizer = romanize::Romanizer::new().unwrap();
     /// assert_eq!(
-    ///     romaji.romanize("U&I ～夕日の綺麗なあの丘で～ U&I"),
+    ///     romanizer.romanize("U&I ～夕日の綺麗なあの丘で～ U&I"),
     ///     "U&I ~Yūhi no Kirei na ano Oka de~ U&I",
     /// );
     /// ```
@@ -155,22 +157,22 @@ mod tests {
 
     #[test]
     fn romanize() {
-        let romaji = Romaji::new().unwrap();
-        assert_eq!(romaji.romanize("太陽のKiss"), "Taiyō no Kiss");
+        let romanizer = Romanizer::new().unwrap();
+        assert_eq!(romanizer.romanize("太陽のKiss"), "Taiyō no Kiss");
         assert_eq!(
-            romaji.romanize("エブリデイワールド"),
+            romanizer.romanize("エブリデイワールド"),
             "Eburideiwārudo"
         );
         assert_eq!(
-            romaji.romanize("U&I ～夕日の綺麗なあの丘で～ U&I"),
+            romanizer.romanize("U&I ～夕日の綺麗なあの丘で～ U&I"),
             "U&I ~Yūhi no Kirei na ano Oka de~ U&I",
         );
         assert_eq!(
-            romaji.romanize("ふでペン ～ボールペン～ [GAME Mix]"),
+            romanizer.romanize("ふでペン ～ボールペン～ [GAME Mix]"),
             "fu de Pen ~Bōrupen~ [GAME Mix]",
         );
         assert_eq!(
-            romaji.romanize("空の境界 「殺人考察（後）」Original Soundtrack"),
+            romanizer.romanize("空の境界 「殺人考察（後）」Original Soundtrack"),
             "Sora no Kyōkai 「Satsujin Kōsatsu(Go)」Original Soundtrack",
         );
     }
