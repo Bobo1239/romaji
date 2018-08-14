@@ -1,3 +1,4 @@
+extern crate hangeul;
 extern crate igo;
 extern crate tempfile;
 extern crate unicode_normalization;
@@ -48,7 +49,7 @@ impl Romanizer {
     /// );
     /// ```
     pub fn romanize(&self, input: &str) -> String {
-        let mut romanized = input.to_string();
+        let mut romanized = hangeul::romanize(input);
 
         let parts = self.tagger.parse(input);
         let mut insert_space = false;

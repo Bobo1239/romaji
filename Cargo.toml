@@ -9,3 +9,4 @@ wana_kana = "0.9.2"
 unicode-normalization = "0.1.7"
 zip = "0.4.2"
 tempfile = "3.0.3"
+hangeul = { git = "https://github.com/zaeleus/hangeul.git" }
