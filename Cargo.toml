@@ -5,7 +5,7 @@ authors = ["Boris-Chengbiao Zhou <bobo1239@web.de>"]
 
 [dependencies]
 igo-rs = "0.2.4"
-wana_kana = "0.9.2"
+wana_kana = { git = "https://github.com/Bobo1239/wana_kana_rust.git" }
 unicode-normalization = "0.1.7"
 zip = "0.4.2"
 tempfile = "3.0.3"
