@@ -7,6 +7,6 @@ authors = ["Boris-Chengbiao Zhou <bobo1239@web.de>"]
 igo-rs = "0.2.4"
 wana_kana = "0.9.3"
 unicode-normalization = "0.1.7"
-zip = "0.4.2"
+zip = "0.5.0"
 tempfile = "3.0.3"
 hangeul = { git = "https://github.com/zaeleus/hangeul.git" }
